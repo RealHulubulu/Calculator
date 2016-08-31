@@ -1,7 +1,7 @@
-/**
- * Created by karas_000 on 8/27/2016.
- */
+
 public class MultiplyOperation extends Operation{
+
+    public MultiplyOperation(){}
 
     public MultiplyOperation( double input1, double input2, char operationChar){
 
@@ -9,5 +9,14 @@ public class MultiplyOperation extends Operation{
 
     }
 
+    void doOperation(double input1, double input2){
+
+        operationAnswer = input1 * input2;
+
+    }
+
+    public double getOperationAnswer(){
+        return operationAnswer;
+    }
 
 }

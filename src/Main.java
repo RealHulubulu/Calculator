@@ -1,17 +1,21 @@
 import jdk.internal.util.xml.impl.Input;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.util.*;
 
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-
+        String fileName;
+        String fileType = "";
+        String filePath = "";
         double userInput1 = 0;
         double userInput2 = 0;
-        int ans = 0; //the answer array will show the dummy ans, need to get it to not display that
+        int ans = 0;
         char operation = 0;
         boolean anotherOperation = true;
         boolean continueUse = true;
@@ -22,18 +26,64 @@ public class Main {
         boolean displayArray = true;
         boolean selectFromArray = false;
         Scanner scan = new Scanner(System.in);
-        //AddOperation dummy = new AddOperation(0,0,'+');
 
         List<Double> storedResults = new ArrayList<Double>();
 
+        System.out.println("\n*****Welcome to Calculator*****");
+
+        while (anotherOperation) {
+            System.out.println("Use saved data from file? Y/N");
+
+            char q = scan.next().charAt(0);
+            if (q == 'y' || q == 'Y') {
+
+                int useSavedData = 0;
+                while (useSavedData == 0) {
+                    try {
+
+                        File folder = new File("C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\CalculatorStorage\\");
+                        File[] listOfFiles = folder.listFiles();
+                        for (int i = 0; i < listOfFiles.length; i++) {
+                            if (listOfFiles[i].isFile()) {
+                                System.out.println("File " + listOfFiles[i].getName());
+                            } else if (listOfFiles[i].isDirectory()) {
+                                System.out.println("Directory " + listOfFiles[i].getName());
+                            }
+                        }
+
+                        System.out.println("Enter in file name without .txt extension: ");
+                        fileName = scan.next();
+                        filePath = "C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\CalculatorStorage\\" + fileName + ".txt";
+                        ReadWriteFiles readWriteFiles = new ReadWriteFiles();
+                        readWriteFiles.readTextFile(filePath);
+                        storedResults = ReadWriteFiles.getArrayOfFile();
+                        useSavedData++;
+                        useAnswer = true;
+                    } catch (NoSuchFileException nsfe) {
+                        System.out.println("Not a file that exists");
+                    }
+                }
+                anotherOperation = false;
+
+            } else if (q == 'n' || q == 'N') {
+
+                anotherOperation = false;
+
+            } else {
+                System.out.println("Error: Please enter y or n");
+                anotherOperation = true;
+            }
+            scan.nextLine();
+        }
+        anotherOperation = true;
+
         while (continueUse) {
 
-// add in save as feature so the user can name the file when saving
 
-            System.out.println("\n*****Welcome to Calculator*****");
+            //System.out.println("\n*****Welcome to Calculator*****");
             while (firstInput) {
 
-                if(useAnswer) {
+                if (useAnswer) {
 
                     ans++;
                     while (anotherOperation) {
@@ -49,18 +99,18 @@ public class Main {
                                 displayArray = false;
                                 boolean loop = true;
                                 selectFromArray = true;
-                                while(loop) {
+                                while (loop) {
                                     try {
                                         System.out.println("What array entry? (first entry corresponds to 1) ");
                                         arraySelection = scan.nextInt();
-                                        if(arraySelection <= ans) {
+                                        if (arraySelection <= ans) {
                                             loop = false;
                                         }
                                     } catch (InputMismatchException ime) {
                                         System.out.println("Error: Input an int");
                                         scan.nextLine();
                                     }
-                                    if(arraySelection > ans) {
+                                    if (arraySelection > ans) {
                                         System.out.println("Error: Input outside array index");
                                     }
                                 }
@@ -77,7 +127,7 @@ public class Main {
                         }
                         displayArray = true;
 
-                        if(selectFromArray == true) {
+                        if (selectFromArray == true) {
                             System.out.println("Use Previous Answer: " + storedResults.get(arraySelection - 1) + " Y/N");
 
                             char q = scan.next().charAt(0);
@@ -98,8 +148,9 @@ public class Main {
                         }
                     }
                     anotherOperation = true;
-                }useAnswer = true;
-                if(firstInput == true) {
+                }
+                useAnswer = true;
+                if (firstInput == true) {
                     try {
                         System.out.println("Enter in first number: ");
                         userInput1 = scan.nextDouble();
@@ -196,11 +247,11 @@ public class Main {
 
                 ReadWriteFiles readWriteFiles = new ReadWriteFiles();
                 try {
-                    String fileType = ".txt";
+                    fileType = ".txt";
                     //String fileName = "FileName";
-                    System.out.println("Save Answer in File Path: C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\ \nEnter in desired file name: " );
-                    String fileName = scan.next();
-                    String filePath = "C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\" + fileName + fileType;
+                    System.out.println("Save Answer in File Path: C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\CalculatorStorage\\ \nEnter in desired file name: ");
+                    fileName = scan.next();
+                    filePath = "C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\CalculatorStorage\\" + fileName + fileType;
                     System.out.println("The file is saved here: " + filePath);
                     //readWriteFiles.writeTextFile(ReadWriteFiles.writaAFile, storedResults);
                     readWriteFiles.writeTextFile(filePath, storedResults);
@@ -218,22 +269,37 @@ public class Main {
             }
             scan.nextLine();
         }
-        //anotherOperation = true;
+        anotherOperation = true;
 
-        /*
-        ReadWriteFiles readWriteFiles = new ReadWriteFiles();
-        try {
-            String fileType = ".txt";
-            //String fileName = "FileName";
-            System.out.println("Save Answer in File Path: C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\ \nEnter in desired file name: " );
-            String fileName = scan.next();
-            String filePath = "C:\\Users\\karas_000\\Desktop\\ReadWriteJava\\" + fileName + fileType;
-            System.out.println("The file is saved here: " + filePath);
-            //readWriteFiles.writeTextFile(ReadWriteFiles.writaAFile, storedResults);
-            readWriteFiles.writeTextFile(filePath, storedResults);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        if (fileType == ".txt") {
+            while (anotherOperation) {
+                System.out.println("Open Saved File? Y/N");
+
+                char q = scan.next().charAt(0);
+                if (q == 'y' || q == 'Y') {
+
+                    ReadWriteFiles readWriteFiles = new ReadWriteFiles();
+                    File file = new File(filePath);
+                    readWriteFiles.open(file);
+                    anotherOperation = false;
+
+                } else if (q == 'n' || q == 'N') {
+                    anotherOperation = false;
+
+                } else {
+                    System.out.println("Error: Please enter y or n");
+                    anotherOperation = true;
+                }
+                //scan.nextLine();
+            }
+        }
+        anotherOperation = true;
+
+
+
+
+
     }
+
 
 }

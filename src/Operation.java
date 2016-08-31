@@ -1,11 +1,13 @@
 
 public abstract class Operation {
 
-    protected double resultOfOperation;
+    private double resultOfOperation;
+    public double operationAnswer = 0;
 
-    protected Operation(){}
+    protected Operation() {
+    }
 
-    public Operation(double input1, double input2, char operationChar){
+    public Operation(double input1, double input2, char operationChar) {
 
         switch (operationChar) {
             case '+':
@@ -25,8 +27,11 @@ public abstract class Operation {
         System.out.println("The result is: " + resultOfOperation);
     }
 
-    public Double getResultOfOperation(){
+    public Double getResultOfOperation() {
         return resultOfOperation;
     }
+
+    abstract void doOperation(double input1, double input2);
+
 
 }
